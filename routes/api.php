@@ -43,8 +43,8 @@ Route::group([
 
     });
 });
-Route::prefix('admin')->namespace('admin')->group(function () {
-    // Upload
+Route::prefix('admin')->namespace('admin')->group(function () { 
+    //File
     Route::post('upload', 'UploadController@upload');
     Route::post('removeFile', 'UploadController@removeFile');  
     //Province
@@ -154,4 +154,6 @@ Route::post('get-content-vue-table','GenTableController@genContentVueTable');
 Route::post('get-content-vue-form','GenTableController@genContentVueForm');
 Route::post('get-content-vue-router','GenTableController@genContentVueRouter');
 
+
+Route::post('generate-code-all','GenTableController@generateCode');
 

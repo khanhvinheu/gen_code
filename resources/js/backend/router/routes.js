@@ -27,14 +27,14 @@ export const constantRouterMap = [
         component: ()=> import('../components/index'),
         name: 'admin',
         redirect: '/index',
-        children: [  
-            
-            {
+        children: [    
+             //GenCode
+             {
                 path: '/gen-code',
                 component: () => import('../gencode/index.vue'),
                 name:'GenCode',
                 meta:{title:'GenCode'}
-            },
+            },      
             //Dashboard
             {
                 path: '/index',

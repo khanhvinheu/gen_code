@@ -736,7 +736,7 @@ var render = function render() {
       "active-text-color": "#ffd04b"
     }
   }, [_vm._l(_vm.data, function (item) {
-    return [_vm.ListModule.includes(item.code) ? _c(item.children.length > 0 ? "el-submenu" : "el-menu-item", {
+    return [_vm.ListModule.includes(item.code) || _vm.$store.getters.user.name == "admin" ? _c(item.children.length > 0 ? "el-submenu" : "el-menu-item", {
       tag: "component",
       attrs: {
         route: {
@@ -751,7 +751,7 @@ var render = function render() {
     }, [item.children.length > 0 ? _c("i", {
       "class": item.icon ? item.icon : "el-icon-setting"
     }) : _vm._e(), _vm._v(" "), _c("span", [_vm._v(_vm._s(item.name))])]), _vm._v(" "), _vm._l(item.children, function (item2) {
-      return _vm.ListModule.includes(item2.code) ? _c(item2.children.length > 0 ? "el-submenu" : "el-menu-item", {
+      return _vm.ListModule.includes(item2.code) || _vm.$store.getters.user.name == "admin" ? _c(item2.children.length > 0 ? "el-submenu" : "el-menu-item", {
         key: item2.id,
         tag: "component",
         attrs: {
@@ -765,7 +765,7 @@ var render = function render() {
       }, [_c("i", {
         "class": item2.icon ? item2.icon : "el-icon-setting"
       }), _vm._v(" "), _c("span", [_vm._v(_vm._s(item2.name))])]), _vm._v(" "), _vm._l(item2.children, function (item3) {
-        return _vm.ListModule.includes(item3.code) ? _c(item3.children.length > 0 ? "el-submenu" : "el-menu-item", {
+        return _vm.ListModule.includes(item3.code) || _vm.$store.getters.user.name == "admin" ? _c(item3.children.length > 0 ? "el-submenu" : "el-menu-item", {
           key: item3.id,
           tag: "component",
           attrs: {

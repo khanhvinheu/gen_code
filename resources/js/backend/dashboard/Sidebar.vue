@@ -31,21 +31,21 @@
       active-text-color="#ffd04b">
       <template v-for="item in data">
         <component :route="{path:item.path}"
-        v-if="ListModule.includes(item.code)" :index="item.path" :is="item.children.length > 0? 'el-submenu':'el-menu-item'">
+        v-if="ListModule.includes(item.code) || $store.getters.user.name=='admin'" :index="item.path" :is="item.children.length > 0? 'el-submenu':'el-menu-item'">
          <i v-if="item.children.length == 0" :class="item.icon?item.icon:'el-icon-setting'"></i>
           <template slot="title">
             <i v-if="item.children.length > 0" :class="item.icon?item.icon:'el-icon-setting'"></i>
             <span >{{ item.name }}</span>
           </template>
             <component  :route="{path:item2.path}"
-            v-if="ListModule.includes(item2.code)" :key="item2.id" :index="item2.path"  v-for="item2 in item.children"
+            v-if="ListModule.includes(item2.code) || $store.getters.user.name=='admin'" :key="item2.id" :index="item2.path"  v-for="item2 in item.children"
             :is="item2.children.length > 0? 'el-submenu':'el-menu-item'">
             <template slot="title">
                 <i :class="item2.icon?item2.icon:'el-icon-setting'"></i>
                 <span>{{ item2.name }}</span>
               </template>
                 <component :route="{path:item3.path}"
-                v-if="ListModule.includes(item3.code)" :key="item3.id" :index="item3.path" v-for="item3 in item2.children"
+                v-if="ListModule.includes(item3.code) || $store.getters.user.name=='admin'" :key="item3.id" :index="item3.path" v-for="item3 in item2.children"
                 :is="item3.children.length > 0? 'el-submenu':'el-menu-item'">
                 <template slot="title">
                   <i :class="item3.icon?item3.icon:'el-icon-setting'"></i>

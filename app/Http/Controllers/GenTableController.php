@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use App\Traits\CommonHelper;
+use App\Models\Modules;
 
 class GenTableController extends Controller
 {
@@ -15,6 +16,178 @@ class GenTableController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function genCode(){
+        $lastCode = Modules::orderBy('id', 'desc')->first(); // lấy mã cuối cùng trong database
+
+        if (!$lastCode) {
+            $number = 1;
+        } else {
+            $number = intval(substr($lastCode->code, -3)) + 1; // lấy số cuối cùng của mã và tăng giá trị lên 1
+        }
+    
+        $newCode = 'MD' . str_pad($number, 4, '0', STR_PAD_LEFT); // tạo mã mới dựa trên số đó và định dạng "ABCXXX"
+        return $newCode;
+    }
+    public function generateCode(Request $request){
+        $request->validate([
+            'component_name' => 'required|string',
+            'component_path' => 'required|string',
+            'model_name' => 'required|string',
+            'title_table' => 'required|string',
+            'title_form' => 'required|string',
+            'fields' => 'required|string',
+            'feild_name_gencode' => 'required|string',
+            'disabled' => 'required|string',
+            'table_name' => 'required|string',
+            'fields' => 'required|string',
+            'fieldsTable' => 'required|string',
+        ]);
+        $fields = $request->input('fields');
+        if($fields){
+            $fields = json_decode($fields, true);
+        }     
+        $fieldsTable = $request->input('fieldsTable');
+        if($fieldsTable){
+            $fieldsTable = json_decode($fieldsTable, true);
+        }     
+        $componentName = $request->input('component_name');
+        $componentPath = $request->input('component_path');
+        $feildNameGenCode = $request->input('feild_name_gencode');
+        $pathApi = $request->input('model_name');
+        $titleTable = $request->input('title_table');
+        $model_name = $request->input('model_name');
+        $titleForm = $request->input('title_form');
+        $tableName = $request->input('table_name');       
+        // Tạo nội dung migration
+        $migrationName = 'create_' . $tableName . '_table';
+        $migrationFileName = date('Y_m_d_His') . '_' . $migrationName . '.php';
+        $migrationPath = database_path("migrations/$migrationFileName");
+
+        $migrationContent = self::genMargationContent($tableName, $fields);
+        file_put_contents($migrationPath, $migrationContent);
+
+        // Chạy migrate để tạo bảng
+        Artisan::call('migrate');
+       
+
+        $modelName = ucfirst($request->input('model_name'));
+        
+
+        // Tạo nội dung model
+        $modelPath = app_path("Models/admin/{$modelName}.php");
+        $modelContent = $this->generateModelContent($modelName, $tableName, $fields);
+
+        // Ghi file
+        File::ensureDirectoryExists(app_path("Models/admin"));
+        File::put($modelPath, $modelContent);
+        
+
+        $controllerName = $request->input('controller_name');
+        $pathController = $request->input('pathController','admin');            
+        $controllerPath = app_path("Http/Controllers/admin/{$controllerName}.php");
+        if(@$pathController){
+            $controllerPath = app_path("Http/Controllers/admin/{$controllerName}.php");
+        }
+        
+        // 1. Tạo Controller bằng Artisan
+        Artisan::call("make:controller admin/{$controllerName}");
+      
+        $textGenCode = ($request->input('text_gencode'));
+        // 2. Kiểm tra xem file đã được tạo chưa
+    
+        if (File::exists($controllerPath)) {
+            // Nội dung muốn chèn vào controller
+            $content = self::genControllerContent($controllerName, $model_name,'admin', $feildNameGenCode, $textGenCode);          
+            
+            // 3. Ghi nội dung vào file
+            File::put($controllerPath, $content);
+        }
+       
+
+        $routeName = $request->input('route_name'); // Ví dụ: 'custom-route'
+        $newRoute = self::genListRouter($model_name, $controllerName, $componentName);
+        // Đường dẫn file api.php
+        $routePath = base_path('routes/api.php');
+        // Đọc nội dung file
+        $fileContent = File::get($routePath);
+        // Xác định vị trí của Route::prefix('admin')->namespace('admin')->group(function () {
+        $pattern = "/Route::prefix\('admin'\)->namespace\('admin'\)->group\(function\s*\(\)\s*{/";
+        preg_match($pattern, $fileContent, $matches, PREG_OFFSET_CAPTURE);
+        if (!empty($matches)) {
+            // Vị trí cần chèn
+            $insertPosition = $matches[0][1] + strlen($matches[0][0]);
+            // Chèn route vào bên trong nhóm admin
+            $fileContent = substr_replace($fileContent, "\n$newRoute", $insertPosition, 0);
+            // Ghi lại file
+            File::put($routePath, $fileContent);            
+        }               
+        //vue table
+        $vuePath = resource_path("js/backend/components/{$componentPath}/index.vue");
+
+        // Nội dung mặc định của file Vue
+        $content =self::generateVueTemplateTable($componentName,$titleTable,$pathApi,$fieldsTable);
+
+        // Kiểm tra thư mục components, nếu chưa có thì tạo
+        if (!File::isDirectory(resource_path("js/backend/components/{$componentName}"))) {
+            File::makeDirectory(resource_path("js/backend/components/{$componentName}"), 0777, true);
+        }
+
+        // Ghi nội dung vào file .vue
+        File::put($vuePath, $content);
+        
+        //vue form
+        $vueFormPath = resource_path("js/backend/components/{$componentPath}/form.vue");
+
+        // Nội dung mặc định của file Vue
+        $content =self::generateVueTemplateForm($componentName, $titleTable, $pathApi, $fieldsTable, $titleForm, $feildNameGenCode);
+
+        // Kiểm tra thư mục components, nếu chưa có thì tạo
+        if (!File::isDirectory(resource_path("js/backend/components/{$componentName}"))) {
+            File::makeDirectory(resource_path("js/backend/components/{$componentName}"), 0777, true);
+        }
+
+        // Ghi nội dung vào file .vue
+        File::put($vueFormPath, $content);
+
+         
+        // Đọc file router Vue hiện tại
+        $routerPath = resource_path('js/backend/router/routes.js');        
+        $routerContent = file_get_contents($routerPath);    
+        // Xác định vị trí của `children` trong `/dashboard`
+        $dashboardPattern = '/path: \'\/dashboard\',[\s\S]*?children: \[/';
+        preg_match($dashboardPattern, $routerContent, $matches);
+
+        if (!$matches) {
+            return response()->json(['error' => 'Không tìm thấy /dashboard trong file router'], 400);
+        }
+        $vueRoutes = self::generateVueRouter($componentPath, $componentName); 
+        // Chèn vào `children` của `/dashboard`
+        if (!str_contains($routerContent, "path: $componentPath")) {
+            $routerContent = preg_replace($dashboardPattern, "$0{$vueRoutes}", $routerContent);
+            // Ghi lại file router
+            file_put_contents($routerPath, $routerContent);
+        }
+       
+        $form=  [
+            "code"=>self::genCode(),
+            "name"=>$tableName,
+            "id_parent"=>null,
+            "index"=>null,
+            "alias"=>'/'.$componentPath.'/*',
+            "class"=>'#',
+            "icon"=>null,
+            "path"=>'/'.$componentPath,
+            "type"=>null,
+            "status"=>'1',
+        ];                   
+        $res = Modules::create($form);
+        if($res){
+            return response()->json(['success'=>true, 'mess'=>'Thêm mới thành công!']);
+        }else{
+            return response()->json(['success'=>false, 'mess'=>'Thêm mới thất bại!']);
+        }
+    
+    }
     //Migration
     public function genContentMigrate(Request $request){
        
@@ -191,9 +364,9 @@ class GenTableController extends Controller
             'component_path' => 'required|string',
             'model_name' => 'required|string',
             'title_table' => 'required|string',
-            'fields' => 'required|string'
+            'fieldsTable' => 'required|string'
         ]);
-        $fields = $request->input('fields');
+        $fields = $request->input('fieldsTable');
         if($fields){
             $fields = json_decode($fields, true);
         }     
@@ -244,11 +417,11 @@ class GenTableController extends Controller
             'model_name' => 'required|string',
             'title_table' => 'required|string',
             'title_form' => 'required|string',
-            'fields' => 'required|string',
+            'fieldsTable' => 'required|string',
             'feild_name_gencode' => 'required|string',
             'disabled' => 'required|string',
         ]);
-        $fields = $request->input('fields');
+        $fields = $request->input('fieldsTable');
         if($fields){
             $fields = json_decode($fields, true);
         }     
@@ -268,11 +441,11 @@ class GenTableController extends Controller
             'model_name' => 'required|string',
             'title_table' => 'required|string',
             'title_form' => 'required|string',
-            'fields' => 'required|string',
+            'fieldsTable' => 'required|string',
             'feild_name_gencode' => 'required|string',
             'disabled' => 'required|string',
         ]);
-        $fields = $request->input('fields');
+        $fields = $request->input('fieldsTable');
         if($fields){
             $fields = json_decode($fields, true);
         }     

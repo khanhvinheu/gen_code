@@ -198,6 +198,9 @@
                 </el-form>
             </div>
         </el-card>
+        <el-card v-show="active==3">
+            <el-button type="primary" @click="genCode()">GenCode</el-button> 
+        </el-card>
         <el-dialog :visible.sync="validExCode" width="50vw">
             <div v-show="active==1">
                 <el-button type="primary" @click="getContentMigration()">GetContentMigration</el-button>                       
@@ -224,18 +227,18 @@ export default {
             active:1,
             form:new FormData(),
             formModel:{
-                nameTable:'user',
-                nameModel:'user',
-                controllerName:'user',
-                textGenCode:'NV',
-                feildNameGenCode:'maNhanVien'
+                nameTable:'task',
+                nameModel:'task',
+                controllerName:'taskController',
+                textGenCode:'TS',
+                feildNameGenCode:'taskCode'
                 // controllerPath:'user',
             },
             vueModel:{
-                nameComponent:'QuanLyNamHoc',
-                pathComponent:'QuanLyNamHoc',                
-                titleTable:'QuanLyNamHoc',                
-                titleForm:'thông tin năm học',                
+                nameComponent:'QuanLyCongViec',
+                pathComponent:'quanlycongviec',                
+                titleTable:'Quản Lý Công Việc',                
+                titleForm:'thông tin công việc',                
             },
             codeControllerExample: '',     
             activeEdit: false,
@@ -262,7 +265,7 @@ export default {
             } else{
                 this.form.set('fields','clear')
             }     
-            ApiService.post('api/get-content-migration',this.form).then(({ data }) => {
+            ApiService.post('/api/get-content-migration',this.form).then(({ data }) => {
                 this.codeControllerExample = data
                 this.validExCode = true
             })
@@ -276,7 +279,7 @@ export default {
             } else{
                 this.form.set('fields','clear')
             }     
-            ApiService.post('api/get-content-model',this.form).then(({ data }) => {
+            ApiService.post('/api/get-content-model',this.form).then(({ data }) => {
                 this.codeControllerExample = data
                 this.validExCode = true
 
@@ -294,7 +297,7 @@ export default {
             } else{
                 this.form.set('fields','clear')
             }     
-            ApiService.post('api/get-content-controller',this.form).then(({ data }) => {
+            ApiService.post('/api/get-content-controller',this.form).then(({ data }) => {
                 this.codeControllerExample = data
                 this.validExCode = true
 
@@ -304,7 +307,7 @@ export default {
             this.form=new FormData(),        
             this.form.set('model_name',this.formModel.nameModel)          
             this.form.set('controller_name',this.formModel.controllerName)          
-            ApiService.post('api/get-content-router',this.form).then(({ data }) => {
+            ApiService.post('/api/get-content-router',this.form).then(({ data }) => {
                 this.codeControllerExample = data
                 this.validExCode = true
 
@@ -317,11 +320,11 @@ export default {
             this.form.set('model_name',this.formModel.nameModel)
             this.form.set('title_table',this.vueModel.titleTable)
             if(this.listFieldTable.length>0){
-                this.form.set('fields',JSON.stringify(this.listFieldTable))
+                this.form.set('fieldsTable',JSON.stringify(this.listFieldTable))
             } else{
-                this.form.set('fields','clear')
+                this.form.set('fieldsTable','clear')
             }   
-            ApiService.post('api/get-content-vue-table',this.form).then(({ data }) => {
+            ApiService.post('/api/get-content-vue-table',this.form).then(({ data }) => {
                 this.codeControllerExample = data
                 this.validExCode = true
             })
@@ -334,13 +337,13 @@ export default {
             this.form.set('feild_name_gencode',this.formModel.feildNameGenCode)
             this.form.set('title_table',this.vueModel.titleTable)
             this.form.set('title_form',this.vueModel.titleForm)
-            this.form.set('disabled',this.vueModel.disabled)
+            this.form.set('disabled',this.vueModel.disabled)       
             if(this.listFieldTable.length>0){
-                this.form.set('fields',JSON.stringify(this.listFieldTable))
+                this.form.set('fieldsTable',JSON.stringify(this.listFieldTable))
             } else{
-                this.form.set('fields','clear')
+                this.form.set('fieldsTable','clear')
             }   
-            ApiService.post('api/get-content-vue-form',this.form).then(({ data }) => {
+            ApiService.post('/api/get-content-vue-form',this.form).then(({ data }) => {
                 this.codeControllerExample = data
                 this.validExCode = true
             })
@@ -355,40 +358,97 @@ export default {
             this.form.set('title_form',this.vueModel.titleForm)
             this.form.set('disabled',this.vueModel.disabled)
             if(this.listFieldTable.length>0){
-                this.form.set('fields',JSON.stringify(this.listFieldTable))
+                this.form.set('fieldsTable',JSON.stringify(this.listFieldTable))
             } else{
-                this.form.set('fields','clear')
+                this.form.set('fieldsTable','clear')
             }   
-            ApiService.post('api/get-content-vue-router',this.form).then(({ data }) => {
+            ApiService.post('/api/get-content-vue-router',this.form).then(({ data }) => {
                 this.codeControllerExample = data
                 this.validExCode = true
+            })
+        },
+        genCode() {
+            this.form=new FormData(),        
+            this.form.set('component_name',this.vueModel.nameComponent)          
+            this.form.set('component_path',this.vueModel.pathComponent)      
+            this.form.set('model_name',this.formModel.nameModel)
+            this.form.set('feild_name_gencode',this.formModel.feildNameGenCode)
+            this.form.set('title_table',this.vueModel.titleTable)
+            this.form.set('title_form',this.vueModel.titleForm)
+            this.form.set('disabled',this.vueModel.disabled)
+            this.form.set('table_name',this.formModel.nameTable)
+            this.form.set('controller_name',this.formModel.controllerName)
+            this.form.set('feild_name_gencode',this.formModel.feildNameGenCode)
+            this.form.set('text_gencode',this.formModel.textGenCode)
+            if(this.listFieldTable.length>0){
+                this.form.set('fieldsTable',JSON.stringify(this.listFieldTable))
+            } else{
+                this.form.set('fieldsTable','clear')
+            }   
+            if(this.listField.length>0){
+                this.form.set('fields',JSON.stringify(this.listField))
+            } else{
+                this.form.set('fields','clear')
+            }     
+            ApiService.post('/api/generate-code-all',this.form).then(({ data }) => {
+                this.codeControllerExample = data
+                //this.validExCode = true
+                if(data.success){
+                    this.$notify({
+                        title: 'Success',
+                        message: data['mess'],
+                        type: 'success'
+                    });
+                    setTimeout(()=>{
+                        location.reload();
+                    },500)
+                }
             })
         },
         deleteRow(id){
             this.listField[id.$index] && this.listField.splice(id.$index,1)            
         },      
         async addRowList(){              
-            this.listField.push({            
-                fieldname: 'username',
-                type: 'string',
-                size: '255',
-                nullable: '',  
-                unique:''     
-            })
+            this.listField.push(
+                {            
+                    fieldname: 'taskCode',
+                    type: 'string',
+                    size: '255',
+                    nullable: '',  
+                    unique:''     
+                },
+                {            
+                    fieldname: 'taskName',
+                    type: 'string',
+                    size: '255',
+                    nullable: '',  
+                    unique:''     
+                },
+            )   
             this.activeEdit = true
         },
         deleteRowTable(id){
             this.listFieldTable[id.$index] && this.listFieldTable.splice(id.$index,1)            
         },      
         async addRowListTable(){              
-            this.listFieldTable.push({            
-                label: '',
-                prop: '',
-                type: '',              
-                required:'',
-                sortable:'',     
-                disabled:'',     
-            })
+            this.listFieldTable.push(
+                {            
+                    label: 'taskCode',
+                    prop: 'taskCode',
+                    type: 'el-input',              
+                    required:'',
+                    sortable:'',     
+                    disabled:'',     
+                },
+                {            
+                    label: 'taskName',
+                    prop: 'taskName',
+                    type: 'el-input',              
+                    required:'',
+                    sortable:'',     
+                    disabled:'',     
+                },
+            )
             this.activeEdit = true
         },
     }

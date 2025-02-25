@@ -8,7 +8,7 @@ trait CommonHelper
     {
         $namespace='';
         if($pathController !=''){
-            $namespace="\\".strtolower($pathController).'\\'.$controllerName;
+            $namespace="\\".strtolower($pathController);
         }
         $content = <<<PHP
         <?php
@@ -26,7 +26,8 @@ trait CommonHelper
             public function index(Request \$request)
             {
                 try {
-                    \$limit = \$request->get('limit', 25);
+                    \$limit = \$request->get('PageLimit', 25);
+                    \$page = \$request->get('Page', 1);
                     \$ascending = (int) \$request->get('ascending', 0);
                     \$orderBy = \$request->get('orderBy', '');
                     \$search = \$request->get('TextSearch', '');
@@ -38,10 +39,12 @@ trait CommonHelper
                     \$queryService->betweenDate = \$betweenDate;
                     \$queryService->limit = \$limit;
                     \$queryService->ascending = \$ascending;
-                    \$queryService->orderBy = \$orderBy;
+                    \$queryService->orderBy = \$orderBy;                   
                     \$query = \$queryService->queryTable();
-                    \$query = \$query->paginate(\$limit);
-                    return response()->json(['success' => true, 'data' => \$query->toArray()]);
+                    \$query = \$query->paginate(\$limit,['*'],'page',\$page);    
+                    \$product = \$query->toArray();
+                    return \$this->jsonTable(\$product);  
+                  
                 } catch (\Exception \$e) {
                     return response()->json(['success' => false, 'mess' => \$e->getMessage()]);
                 }
@@ -167,13 +170,14 @@ trait CommonHelper
         EOT;
     }
 
-    public function genListRouter($path, $controllerName){
+    public function genListRouter($path, $controllerName, $componentName='Ex'){
         return  $newRoutes = <<<EOT
+        //{$componentName}
         Route::get('$path', '$controllerName@index');
         Route::get('$path/gen_code', '$controllerName@genCode');
         Route::get('$path/detail/{id}', '$controllerName@show');
         Route::post('$path/update/{id}', '$controllerName@update');
-        Route::post('$path/create', '$controllerName@create');
+        Route::post('$path/create', '$controllerName@store');
         Route::post('$path/delete/{id}', '$controllerName@destroy');    
     EOT;
     }
@@ -524,7 +528,7 @@ trait CommonHelper
                         submit(){
                             let _this= this
                             let url
-                            url = this.resID?('{$pathApi}/update/'+this.resID):'/api/admin/danhsachnamhoc/create'
+                            url = this.resID?('{$pathApi}/update/'+this.resID):'{$pathApi}/create'
                             this.\$refs['form'].validate((valid) => {
                                 if (valid) {
                                     axios({
@@ -585,10 +589,10 @@ trait CommonHelper
     public function generateVueRouter($path, $componentName){
         return  $vueRoutes = <<<EOT
             \n
-                    //{$path}
+                    //{$componentName}
                     {
                         path: '/$path',
-                        component: () => import('../components/$componentName/list'),
+                        component: () => import('../components/$componentName/index'),
                         name: '{$componentName}List',
                         meta: { title: '{$componentName}List' }
                     },

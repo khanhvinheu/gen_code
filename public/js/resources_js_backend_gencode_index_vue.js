@@ -24,19 +24,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       active: 1,
       form: new FormData(),
       formModel: {
-        nameTable: 'user',
-        nameModel: 'user',
-        controllerName: 'user',
-        textGenCode: 'NV',
-        feildNameGenCode: 'maNhanVien'
+        nameTable: 'task',
+        nameModel: 'task',
+        controllerName: 'taskController',
+        textGenCode: 'TS',
+        feildNameGenCode: 'taskCode'
         // controllerPath:'user',
       },
 
       vueModel: {
-        nameComponent: 'QuanLyNamHoc',
-        pathComponent: 'QuanLyNamHoc',
-        titleTable: 'QuanLyNamHoc',
-        titleForm: 'thông tin năm học'
+        nameComponent: 'QuanLyCongViec',
+        pathComponent: 'quanlycongviec',
+        titleTable: 'Quản Lý Công Việc',
+        titleForm: 'thông tin công việc'
       },
       codeControllerExample: '',
       activeEdit: false,
@@ -62,7 +62,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else {
         this.form.set('fields', 'clear');
       }
-      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/get-content-migration', this.form).then(function (_ref) {
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-migration', this.form).then(function (_ref) {
         var data = _ref.data;
         _this.codeControllerExample = data;
         _this.validExCode = true;
@@ -77,7 +77,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else {
         this.form.set('fields', 'clear');
       }
-      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/get-content-model', this.form).then(function (_ref2) {
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-model', this.form).then(function (_ref2) {
         var data = _ref2.data;
         _this2.codeControllerExample = data;
         _this2.validExCode = true;
@@ -95,7 +95,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else {
         this.form.set('fields', 'clear');
       }
-      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/get-content-controller', this.form).then(function (_ref3) {
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-controller', this.form).then(function (_ref3) {
         var data = _ref3.data;
         _this3.codeControllerExample = data;
         _this3.validExCode = true;
@@ -105,7 +105,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this4 = this;
       this.form = new FormData(), this.form.set('model_name', this.formModel.nameModel);
       this.form.set('controller_name', this.formModel.controllerName);
-      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/get-content-router', this.form).then(function (_ref4) {
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-router', this.form).then(function (_ref4) {
         var data = _ref4.data;
         _this4.codeControllerExample = data;
         _this4.validExCode = true;
@@ -118,11 +118,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.form.set('model_name', this.formModel.nameModel);
       this.form.set('title_table', this.vueModel.titleTable);
       if (this.listFieldTable.length > 0) {
-        this.form.set('fields', JSON.stringify(this.listFieldTable));
+        this.form.set('fieldsTable', JSON.stringify(this.listFieldTable));
       } else {
-        this.form.set('fields', 'clear');
+        this.form.set('fieldsTable', 'clear');
       }
-      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/get-content-vue-table', this.form).then(function (_ref5) {
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-vue-table', this.form).then(function (_ref5) {
         var data = _ref5.data;
         _this5.codeControllerExample = data;
         _this5.validExCode = true;
@@ -138,11 +138,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.form.set('title_form', this.vueModel.titleForm);
       this.form.set('disabled', this.vueModel.disabled);
       if (this.listFieldTable.length > 0) {
-        this.form.set('fields', JSON.stringify(this.listFieldTable));
+        this.form.set('fieldsTable', JSON.stringify(this.listFieldTable));
       } else {
-        this.form.set('fields', 'clear');
+        this.form.set('fieldsTable', 'clear');
       }
-      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/get-content-vue-form', this.form).then(function (_ref6) {
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-vue-form', this.form).then(function (_ref6) {
         var data = _ref6.data;
         _this6.codeControllerExample = data;
         _this6.validExCode = true;
@@ -158,33 +158,78 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.form.set('title_form', this.vueModel.titleForm);
       this.form.set('disabled', this.vueModel.disabled);
       if (this.listFieldTable.length > 0) {
-        this.form.set('fields', JSON.stringify(this.listFieldTable));
+        this.form.set('fieldsTable', JSON.stringify(this.listFieldTable));
       } else {
-        this.form.set('fields', 'clear');
+        this.form.set('fieldsTable', 'clear');
       }
-      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('api/get-content-vue-router', this.form).then(function (_ref7) {
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-vue-router', this.form).then(function (_ref7) {
         var data = _ref7.data;
         _this7.codeControllerExample = data;
         _this7.validExCode = true;
+      });
+    },
+    genCode: function genCode() {
+      var _this8 = this;
+      this.form = new FormData(), this.form.set('component_name', this.vueModel.nameComponent);
+      this.form.set('component_path', this.vueModel.pathComponent);
+      this.form.set('model_name', this.formModel.nameModel);
+      this.form.set('feild_name_gencode', this.formModel.feildNameGenCode);
+      this.form.set('title_table', this.vueModel.titleTable);
+      this.form.set('title_form', this.vueModel.titleForm);
+      this.form.set('disabled', this.vueModel.disabled);
+      this.form.set('table_name', this.formModel.nameTable);
+      this.form.set('controller_name', this.formModel.controllerName);
+      this.form.set('feild_name_gencode', this.formModel.feildNameGenCode);
+      this.form.set('text_gencode', this.formModel.textGenCode);
+      if (this.listFieldTable.length > 0) {
+        this.form.set('fieldsTable', JSON.stringify(this.listFieldTable));
+      } else {
+        this.form.set('fieldsTable', 'clear');
+      }
+      if (this.listField.length > 0) {
+        this.form.set('fields', JSON.stringify(this.listField));
+      } else {
+        this.form.set('fields', 'clear');
+      }
+      _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/generate-code-all', this.form).then(function (_ref8) {
+        var data = _ref8.data;
+        _this8.codeControllerExample = data;
+        //this.validExCode = true
+        if (data.success) {
+          _this8.$notify({
+            title: 'Success',
+            message: data['mess'],
+            type: 'success'
+          });
+          setTimeout(function () {
+            location.reload();
+          }, 500);
+        }
       });
     },
     deleteRow: function deleteRow(id) {
       this.listField[id.$index] && this.listField.splice(id.$index, 1);
     },
     addRowList: function addRowList() {
-      var _this8 = this;
+      var _this9 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              _this8.listField.push({
-                fieldname: 'username',
+              _this9.listField.push({
+                fieldname: 'taskCode',
+                type: 'string',
+                size: '255',
+                nullable: '',
+                unique: ''
+              }, {
+                fieldname: 'taskName',
                 type: 'string',
                 size: '255',
                 nullable: '',
                 unique: ''
               });
-              _this8.activeEdit = true;
+              _this9.activeEdit = true;
             case 2:
             case "end":
               return _context.stop();
@@ -196,20 +241,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.listFieldTable[id.$index] && this.listFieldTable.splice(id.$index, 1);
     },
     addRowListTable: function addRowListTable() {
-      var _this9 = this;
+      var _this10 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              _this9.listFieldTable.push({
-                label: '',
-                prop: '',
-                type: '',
+              _this10.listFieldTable.push({
+                label: 'taskCode',
+                prop: 'taskCode',
+                type: 'el-input',
+                required: '',
+                sortable: '',
+                disabled: ''
+              }, {
+                label: 'taskName',
+                prop: 'taskName',
+                type: 'el-input',
                 required: '',
                 sortable: '',
                 disabled: ''
               });
-              _this9.activeEdit = true;
+              _this10.activeEdit = true;
             case 2:
             case "end":
               return _context2.stop();
@@ -838,7 +890,23 @@ var render = function render() {
     on: {
       click: _vm.next
     }
-  }, [_vm._v("Next step")]), _vm._v(" "), _c("el-button", [_vm._v("Cancel")])], 1)], 1)], 1)]) : _vm._e(), _vm._v(" "), _c("el-dialog", {
+  }, [_vm._v("Next step")]), _vm._v(" "), _c("el-button", [_vm._v("Cancel")])], 1)], 1)], 1)]) : _vm._e(), _vm._v(" "), _c("el-card", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: _vm.active == 3,
+      expression: "active==3"
+    }]
+  }, [_c("el-button", {
+    attrs: {
+      type: "primary"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.genCode();
+      }
+    }
+  }, [_vm._v("GenCode")])], 1), _vm._v(" "), _c("el-dialog", {
     attrs: {
       visible: _vm.validExCode,
       width: "50vw"

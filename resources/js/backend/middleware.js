@@ -41,17 +41,17 @@ router.beforeEach(async (to, from, next) => {
           if(from.path ==='/login' && store.getters.user.ModuleDefault[0].path){
             next({path:store.getters.user.ModuleDefault[0].path, replace: true });
           }else{        
-            let pathModule = store.getters.user.ArrayModule.map(e=>e.path)
-            if(pathModule.includes(to.path)|| to.meta.type=='Form'){
-              next({...to, replace: true });
-            }else{
-              if(to.path.includes('/check-file-in-pdf') || to.path.includes('/gen-code')){
-                next()
-              }else{
-                next({path:'/404'});
-              }
-              
-            }
+            // let pathModule = store.getters.user.ArrayModule.map(e=>e.path)
+            // if(pathModule.includes(to.path)|| to.meta.type=='Form'){
+            //   next({...to, replace: true });
+            // }else{
+            //   if(to.path.includes('/check-file-in-pdf') || to.path.includes('/gen-code')){
+            //     next()
+            //   }else{
+            //     next({path:'/404'});
+            //   }
+              next()
+            // }
            
           }
         } catch (error) {
