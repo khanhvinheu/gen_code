@@ -788,17 +788,25 @@ var staticRenderFns = [function () {
     _c = _vm._self._c;
   return _c("a", {
     staticClass: "brand-link"
-  }, [_c("a", {
+  }, [_c("img", {
+    staticClass: "brand-image img-circle elevation-3",
+    staticStyle: {
+      opacity: ".8"
+    },
+    attrs: {
+      src: "/images/AdminLTELogo.png",
+      alt: "AdminLTE Logo"
+    }
+  }), _vm._v(" "), _c("a", {
     staticClass: "brand-text font-weight-light",
     staticStyle: {
-      color: "#ee4d2d",
-      "font-size": "18px",
-      "font-weight": "bold"
+      color: "#fff",
+      "font-size": "18px"
     },
     attrs: {
       href: "/"
     }
-  }, [_c("b", [_vm._v("Dev tool")])])]);
+  }, [_c("b", [_vm._v("DEV TOOL")])])]);
 }];
 render._withStripped = true;
 

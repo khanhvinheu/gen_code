@@ -3,10 +3,10 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a class="brand-link">
-      <!-- <img src="/images/logo.jpg" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" -->
-        <!-- style="opacity: .8"> -->
+      <img src="/images/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+        style="opacity: .8">
       <!-- <span class="brand-text font-weight-light">{{$appSetting.NAME}}</span> -->
-       <a class="brand-text font-weight-light" style="color: #ee4d2d; font-size: 18px; font-weight: bold;" href="/"><b>Dev tool</b> </a>
+       <a class="brand-text font-weight-light" style="color: #fff; font-size: 18px;" href="/"><b>DEV TOOL</b> </a>
     </a>
     <!-- Sidebar -->
     <div class="sidebar" >
