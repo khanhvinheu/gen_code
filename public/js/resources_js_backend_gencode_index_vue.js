@@ -24,19 +24,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       active: 1,
       form: new FormData(),
       formModel: {
-        nameTable: 'task',
-        nameModel: 'task',
-        controllerName: 'taskController',
-        textGenCode: 'TS',
-        feildNameGenCode: 'taskCode'
+        nameTable: '',
+        nameModel: '',
+        controllerName: '',
+        textGenCode: '',
+        feildNameGenCode: ''
         // controllerPath:'user',
       },
 
       vueModel: {
-        nameComponent: 'QuanLyCongViec',
-        pathComponent: 'quanlycongviec',
-        titleTable: 'Quản Lý Công Việc',
-        titleForm: 'thông tin công việc'
+        nameComponent: '',
+        pathComponent: '',
+        titleTable: '',
+        titleForm: ''
       },
       codeReview: 'Chọn file để xem nội dung được tạo',
       activeEdit: false,
@@ -217,15 +217,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _this9.listField.push({
-                fieldname: 'taskCode',
-                type: 'string',
-                size: '255',
-                nullable: '',
-                unique: ''
-              }, {
-                fieldname: 'taskName',
-                type: 'string',
-                size: '255',
+                fieldname: '',
+                type: '',
+                size: '',
                 nullable: '',
                 unique: ''
               });
@@ -247,16 +241,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               _this10.listFieldTable.push({
-                label: 'taskCode',
-                prop: 'taskCode',
-                type: 'el-input',
-                required: '',
-                sortable: '',
-                disabled: ''
-              }, {
-                label: 'taskName',
-                prop: 'taskName',
-                type: 'el-input',
+                label: '',
+                prop: '',
+                type: '',
                 required: '',
                 sortable: '',
                 disabled: ''

@@ -237,18 +237,18 @@ export default {
             active:1,
             form:new FormData(),
             formModel:{
-                nameTable:'task',
-                nameModel:'task',
-                controllerName:'taskController',
-                textGenCode:'TS',
-                feildNameGenCode:'taskCode'
+                nameTable:'',
+                nameModel:'',
+                controllerName:'',
+                textGenCode:'',
+                feildNameGenCode:''
                 // controllerPath:'user',
             },
             vueModel:{
-                nameComponent:'QuanLyCongViec',
-                pathComponent:'quanlycongviec',                
-                titleTable:'Quản Lý Công Việc',                
-                titleForm:'thông tin công việc',                
+                nameComponent:'',
+                pathComponent:'',                
+                titleTable:'',                
+                titleForm:'',                
             },
             codeReview: 'Chọn file để xem nội dung được tạo',     
             activeEdit: false,
@@ -421,19 +421,12 @@ export default {
         async addRowList(){              
             this.listField.push(
                 {            
-                    fieldname: 'taskCode',
-                    type: 'string',
-                    size: '255',
+                    fieldname: '',
+                    type: '',
+                    size: '',
                     nullable: '',  
                     unique:''     
-                },
-                {            
-                    fieldname: 'taskName',
-                    type: 'string',
-                    size: '255',
-                    nullable: '',  
-                    unique:''     
-                },
+                },               
             )   
             this.activeEdit = true
         },
@@ -443,21 +436,13 @@ export default {
         async addRowListTable(){              
             this.listFieldTable.push(
                 {            
-                    label: 'taskCode',
-                    prop: 'taskCode',
-                    type: 'el-input',              
+                    label: '',
+                    prop: '',
+                    type: '',              
                     required:'',
                     sortable:'',     
                     disabled:'',     
-                },
-                {            
-                    label: 'taskName',
-                    prop: 'taskName',
-                    type: 'el-input',              
-                    required:'',
-                    sortable:'',     
-                    disabled:'',     
-                },
+                },              
             )
             this.activeEdit = true
         },
