@@ -44,6 +44,13 @@ Route::group([
     });
 });
 Route::prefix('admin')->namespace('admin')->group(function () {
+        //QuanLyKhuVuc
+    Route::get('quanlythongtinkhuvuc', 'KhuVucController@index');
+    Route::get('quanlythongtinkhuvuc/gen_code', 'KhuVucController@genCode');
+    Route::get('quanlythongtinkhuvuc/detail/{id}', 'KhuVucController@show');
+    Route::post('quanlythongtinkhuvuc/update/{id}', 'KhuVucController@update');
+    Route::post('quanlythongtinkhuvuc/create', 'KhuVucController@store');
+    Route::post('quanlythongtinkhuvuc/delete/{id}', 'KhuVucController@destroy');    
         //QuanLyCongViec
     Route::get('task', 'taskController@index');
     Route::get('task/gen_code', 'taskController@genCode');

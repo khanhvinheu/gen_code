@@ -21,7 +21,28 @@ export const constantRouterMap = [
         component: ()=> import('../components/index'),
         name: 'admin',
         redirect: '/index',
-        children: [          
+        children: [
+        
+
+            //QuanLyKhuVuc
+            {
+                path: '/QuanLyKhuVuc',
+                component: () => import('../components/QuanLyKhuVuc/index'),
+                name: 'QuanLyKhuVucList',
+                meta: { title: 'QuanLyKhuVucList' }
+            },
+            {
+                path: '/QuanLyKhuVuc/create',
+                component: () => import('../components/QuanLyKhuVuc/form'),
+                name: 'QuanLyKhuVucCreate',
+                meta: { title: 'QuanLyKhuVucCreate', type: 'Form' }
+            },
+            {
+                path: '/QuanLyKhuVuc/:id?',
+                component: () => import('../components/QuanLyKhuVuc/form'),
+                name: 'QuanLyKhuVucUpdate',
+                meta: { title: 'QuanLyKhuVucUpdate', type: 'Form' }
+            },,          
              //GenCode
              {
                 path: '/gen-code',

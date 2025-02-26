@@ -211,7 +211,7 @@ class GenTableController extends Controller
         // ADD NEW ITEM MODULE
         $form=  [
             "code"=>self::genCode(),
-            "name"=>$tableName,
+            "name"=>$componentName,
             "id_parent"=>null,
             "index"=>null,
             "alias"=>'/'.$componentPath.'/*',
