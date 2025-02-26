@@ -208,7 +208,7 @@
             <el-button type="primary" @click="getContentVueRouter()">GetContentVueRouter</el-button> 
             <el-divider></el-divider>
             <pre style="background-color: black; max-height: 60vh; overflow-x: auto;"><code style="color: #20c275;">{{ codeReview }}</code></pre>
-            <el-button type="primary" @click="genCode()">GenCode</el-button> 
+            <el-button type="primary" @click="genCode()" :loading="loading">GenCode</el-button> 
             <el-button style="margin-top: 12px;" @click="back">Back step</el-button>     
         </el-card>
         <el-dialog :visible.sync="validExCode" width="50vw">
@@ -236,6 +236,7 @@ export default {
         return {
             active:1,
             form:new FormData(),
+            loading:false,
             formModel:{
                 nameTable:'',
                 nameModel:'',
@@ -378,6 +379,7 @@ export default {
             })
         },
         genCode() {
+            this.loading=true
             this.form=new FormData(),        
             this.form.set('component_name',this.vueModel.nameComponent)          
             this.form.set('component_path',this.vueModel.pathComponent)      
@@ -409,9 +411,10 @@ export default {
                         message: data['mess'],
                         type: 'success'
                     });
+                    this.loading=false
                     setTimeout(()=>{
                         location.reload();
-                    },2000)
+                    },4000)
                 }
             })
         },

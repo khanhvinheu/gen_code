@@ -24,6 +24,90 @@ export const constantRouterMap = [
         children: [
         
 
+            //Test
+            {
+                path: '/Test',
+                component: () => import('../components/Test/index'),
+                name: 'TestList',
+                meta: { title: 'TestList' }
+            },
+            {
+                path: '/Test/create',
+                component: () => import('../components/Test/form'),
+                name: 'TestCreate',
+                meta: { title: 'TestCreate', type: 'Form' }
+            },
+            {
+                path: '/Test/:id?',
+                component: () => import('../components/Test/form'),
+                name: 'TestUpdate',
+                meta: { title: 'TestUpdate', type: 'Form' }
+            },,
+        
+
+            //QuanLyChiThu
+            {
+                path: '/QuanLyChiThu',
+                component: () => import('../components/QuanLyChiThu/index'),
+                name: 'QuanLyChiThuList',
+                meta: { title: 'QuanLyChiThuList' }
+            },
+            {
+                path: '/QuanLyChiThu/create',
+                component: () => import('../components/QuanLyChiThu/form'),
+                name: 'QuanLyChiThuCreate',
+                meta: { title: 'QuanLyChiThuCreate', type: 'Form' }
+            },
+            {
+                path: '/QuanLyChiThu/:id?',
+                component: () => import('../components/QuanLyChiThu/form'),
+                name: 'QuanLyChiThuUpdate',
+                meta: { title: 'QuanLyChiThuUpdate', type: 'Form' }
+            },,
+        
+
+            //QuanLyChiThu
+            {
+                path: '/QuanLyChiThu',
+                component: () => import('../components/QuanLyChiThu/index'),
+                name: 'QuanLyChiThuList',
+                meta: { title: 'QuanLyChiThuList' }
+            },
+            {
+                path: '/QuanLyChiThu/create',
+                component: () => import('../components/QuanLyChiThu/form'),
+                name: 'QuanLyChiThuCreate',
+                meta: { title: 'QuanLyChiThuCreate', type: 'Form' }
+            },
+            {
+                path: '/QuanLyChiThu/:id?',
+                component: () => import('../components/QuanLyChiThu/form'),
+                name: 'QuanLyChiThuUpdate',
+                meta: { title: 'QuanLyChiThuUpdate', type: 'Form' }
+            },,
+        
+
+            //QuanLyChiThu
+            {
+                path: '/QuanLyChiThu',
+                component: () => import('../components/QuanLyChiThu/index'),
+                name: 'QuanLyChiThuList',
+                meta: { title: 'QuanLyChiThuList' }
+            },
+            {
+                path: '/QuanLyChiThu/create',
+                component: () => import('../components/QuanLyChiThu/form'),
+                name: 'QuanLyChiThuCreate',
+                meta: { title: 'QuanLyChiThuCreate', type: 'Form' }
+            },
+            {
+                path: '/QuanLyChiThu/:id?',
+                component: () => import('../components/QuanLyChiThu/form'),
+                name: 'QuanLyChiThuUpdate',
+                meta: { title: 'QuanLyChiThuUpdate', type: 'Form' }
+            },,
+        
+
             //QuanLyKhuVuc
             {
                 path: '/QuanLyKhuVuc',

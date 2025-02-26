@@ -23,6 +23,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       active: 1,
       form: new FormData(),
+      loading: false,
       formModel: {
         nameTable: '',
         nameModel: '',
@@ -170,6 +171,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     genCode: function genCode() {
       var _this8 = this;
+      this.loading = true;
       this.form = new FormData(), this.form.set('component_name', this.vueModel.nameComponent);
       this.form.set('component_path', this.vueModel.pathComponent);
       this.form.set('model_name', this.formModel.nameModel);
@@ -201,9 +203,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             message: data['mess'],
             type: 'success'
           });
+          _this8.loading = false;
           setTimeout(function () {
             location.reload();
-          }, 2000);
+          }, 4000);
         }
       });
     },
@@ -966,7 +969,8 @@ var render = function render() {
     }
   }, [_vm._v(_vm._s(_vm.codeReview))])]), _vm._v(" "), _c("el-button", {
     attrs: {
-      type: "primary"
+      type: "primary",
+      loading: _vm.loading
     },
     on: {
       click: function click($event) {

@@ -44,6 +44,20 @@ Route::group([
     });
 });
 Route::prefix('admin')->namespace('admin')->group(function () {
+        //Test
+    Route::get('test', 'TestController@index');
+    Route::get('test/gen_code', 'TestController@genCode');
+    Route::get('test/detail/{id}', 'TestController@show');
+    Route::post('test/update/{id}', 'TestController@update');
+    Route::post('test/create', 'TestController@store');
+    Route::post('test/delete/{id}', 'TestController@destroy');    
+        //QuanLyChiThu
+    Route::get('nhatkychithu', 'NhatKyChiThuController@index');
+    Route::get('nhatkychithu/gen_code', 'NhatKyChiThuController@genCode');
+    Route::get('nhatkychithu/detail/{id}', 'NhatKyChiThuController@show');
+    Route::post('nhatkychithu/update/{id}', 'NhatKyChiThuController@update');
+    Route::post('nhatkychithu/create', 'NhatKyChiThuController@store');
+    Route::post('nhatkychithu/delete/{id}', 'NhatKyChiThuController@destroy');    
         //QuanLyKhuVuc
     Route::get('quanlythongtinkhuvuc', 'KhuVucController@index');
     Route::get('quanlythongtinkhuvuc/gen_code', 'KhuVucController@genCode');
