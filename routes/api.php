@@ -43,7 +43,15 @@ Route::group([
 
     });
 });
-Route::prefix('admin')->namespace('admin')->group(function () { 
+Route::prefix('admin')->namespace('admin')->group(function () {
+        //QuanLyCongViec
+    Route::get('task', 'taskController@index');
+    Route::get('task/gen_code', 'taskController@genCode');
+    Route::get('task/detail/{id}', 'taskController@show');
+    Route::post('task/update/{id}', 'taskController@update');
+    Route::post('task/create', 'taskController@store');
+    Route::post('task/delete/{id}', 'taskController@destroy');           
+    
     //File
     Route::post('upload', 'UploadController@upload');
     Route::post('removeFile', 'UploadController@removeFile');  

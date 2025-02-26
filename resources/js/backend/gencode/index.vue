@@ -5,7 +5,6 @@
                 <el-step title="Step 1" description="Generate php file"></el-step>
                 <el-step title="Step 2" description="Generate vue file"></el-step>
                 <el-step title="Step 3" description="Finish generate code"></el-step>
-             
             </el-steps>
         </el-card>
         <el-card v-if="active==1">          
@@ -93,8 +92,8 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="getContentMigration()">Viewcode</el-button>       
-                        <el-button style="margin-top: 12px;" @click="next">Next step</el-button>                  
                         <el-button style="margin-top: 12px;" @click="back">Back step</el-button>                  
+                        <el-button style="margin-top: 12px;" @click="next">Next step</el-button>                  
                         <el-button>Cancel</el-button>
                     </el-form-item>
                 </el-form>
@@ -102,7 +101,7 @@
         </el-card>      
         <el-card v-if="active==2">          
             <div class="text item">
-                <el-form ref="form" :model="vueModel" label-width="120px">
+                <el-form ref="form" :model="vueModel" label-width="150px">
                     <el-form-item label="Function name">
                         <el-input v-model="vueModel.nameComponent" placeholder="QuanLyDanhSach -> name:'QuanLyDanhSachTable,Form'"></el-input>
                     </el-form-item>
@@ -192,14 +191,25 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="validExCode=true">Viewcode</el-button>       
-                        <el-button style="margin-top: 12px;" @click="next">Next step</el-button>                  
+                        <el-button style="margin-top: 12px;" @click="back">Back step</el-button>                          
+                        <el-button style="margin-top: 12px;" @click="next">Next step</el-button>      
                         <el-button>Cancel</el-button>
                     </el-form-item>
                 </el-form>
             </div>
-        </el-card>
-        <el-card v-show="active==3">
+        </el-card>        
+        <el-card v-show="active==3">           
+            <el-button type="primary" @click="getContentMigration()">GetContentMigration</el-button>                       
+            <el-button type="success" @click="getContentModel()">GetContentModel</el-button>                       
+            <el-button type="danger" @click="getContentController()">GetContentController</el-button>     
+            <el-button type="danger" @click="getContentRouter()">GetContentRouter</el-button>  
+            <el-button type="primary" @click="getContentVueTable()">GetContentVueTable</el-button>          
+            <el-button type="primary" @click="getContentVueForm()">GetContentVueForm</el-button>          
+            <el-button type="primary" @click="getContentVueRouter()">GetContentVueRouter</el-button> 
+            <el-divider></el-divider>
+            <pre style="background-color: black; max-height: 60vh; overflow-x: auto;"><code style="color: #20c275;">{{ codeReview }}</code></pre>
             <el-button type="primary" @click="genCode()">GenCode</el-button> 
+            <el-button style="margin-top: 12px;" @click="back">Back step</el-button>     
         </el-card>
         <el-dialog :visible.sync="validExCode" width="50vw">
             <div v-show="active==1">
@@ -214,7 +224,7 @@
                 <el-button type="primary" @click="getContentVueRouter()">GetContentVueRouter</el-button>          
             </div>
             <el-divider></el-divider>
-            <pre style="background-color: black; max-height: 60vh; overflow-x: auto;"><code style="color: #20c275;">{{ codeControllerExample }}</code></pre>
+            <pre style="background-color: black; max-height: 60vh; overflow-x: auto;"><code style="color: #20c275;">{{ codeReview }}</code></pre>
         </el-dialog>
     </div>
 </template>
@@ -240,7 +250,7 @@ export default {
                 titleTable:'Quản Lý Công Việc',                
                 titleForm:'thông tin công việc',                
             },
-            codeControllerExample: '',     
+            codeReview: 'Chọn file để xem nội dung được tạo',     
             activeEdit: false,
             listField:[],
             listFieldTable:[],
@@ -254,7 +264,7 @@ export default {
             if (this.active++ > 4) this.active = 1;
         },
         back() {
-            if (this.active-- > 2) this.active = 1;
+            if (this.active > 1) this.active--;
         },
         getContentMigration() {
             this.form=new FormData(),
@@ -266,8 +276,8 @@ export default {
                 this.form.set('fields','clear')
             }     
             ApiService.post('/api/get-content-migration',this.form).then(({ data }) => {
-                this.codeControllerExample = data
-                this.validExCode = true
+                this.codeReview = data
+                // this.validExCode = true
             })
         },
         getContentModel() {
@@ -280,8 +290,8 @@ export default {
                 this.form.set('fields','clear')
             }     
             ApiService.post('/api/get-content-model',this.form).then(({ data }) => {
-                this.codeControllerExample = data
-                this.validExCode = true
+                this.codeReview = data
+                // this.validExCode = true
 
             })
         },
@@ -298,8 +308,8 @@ export default {
                 this.form.set('fields','clear')
             }     
             ApiService.post('/api/get-content-controller',this.form).then(({ data }) => {
-                this.codeControllerExample = data
-                this.validExCode = true
+                this.codeReview = data
+                // this.validExCode = true
 
             })
         },
@@ -308,8 +318,8 @@ export default {
             this.form.set('model_name',this.formModel.nameModel)          
             this.form.set('controller_name',this.formModel.controllerName)          
             ApiService.post('/api/get-content-router',this.form).then(({ data }) => {
-                this.codeControllerExample = data
-                this.validExCode = true
+                this.codeReview = data
+                // this.validExCode = true
 
             })
         },
@@ -325,8 +335,8 @@ export default {
                 this.form.set('fieldsTable','clear')
             }   
             ApiService.post('/api/get-content-vue-table',this.form).then(({ data }) => {
-                this.codeControllerExample = data
-                this.validExCode = true
+                this.codeReview = data
+                // this.validExCode = true
             })
         },
         getContentVueForm() {
@@ -344,8 +354,8 @@ export default {
                 this.form.set('fieldsTable','clear')
             }   
             ApiService.post('/api/get-content-vue-form',this.form).then(({ data }) => {
-                this.codeControllerExample = data
-                this.validExCode = true
+                this.codeReview = data
+                // this.validExCode = true
             })
         },
         getContentVueRouter() {
@@ -363,8 +373,8 @@ export default {
                 this.form.set('fieldsTable','clear')
             }   
             ApiService.post('/api/get-content-vue-router',this.form).then(({ data }) => {
-                this.codeControllerExample = data
-                this.validExCode = true
+                this.codeReview = data
+                // this.validExCode = true
             })
         },
         genCode() {
@@ -391,7 +401,7 @@ export default {
                 this.form.set('fields','clear')
             }     
             ApiService.post('/api/generate-code-all',this.form).then(({ data }) => {
-                this.codeControllerExample = data
+                this.codeReview = data
                 //this.validExCode = true
                 if(data.success){
                     this.$notify({
@@ -401,7 +411,7 @@ export default {
                     });
                     setTimeout(()=>{
                         location.reload();
-                    },500)
+                    },2000)
                 }
             })
         },

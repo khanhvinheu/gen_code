@@ -41,17 +41,16 @@ router.beforeEach(async (to, from, next) => {
           if(from.path ==='/login' && store.getters.user.ModuleDefault[0].path){
             next({path:store.getters.user.ModuleDefault[0].path, replace: true });
           }else{        
-            // let pathModule = store.getters.user.ArrayModule.map(e=>e.path)
-            // if(pathModule.includes(to.path)|| to.meta.type=='Form'){
-            //   next({...to, replace: true });
-            // }else{
-            //   if(to.path.includes('/check-file-in-pdf') || to.path.includes('/gen-code')){
-            //     next()
-            //   }else{
-            //     next({path:'/404'});
-            //   }
-              next()
-            // }
+            let pathModule = store.getters.user.ArrayModule.map(e=>e.path)
+            if(pathModule.includes(to.path)|| to.meta.type=='Form'){
+              next({...to, replace: true });
+            }else{
+              if(to.path.includes('/') || store.getters.user.name=='admin'){
+                next()
+              }else{
+                next({path:'/404'});
+              }
+            }
            
           }
         } catch (error) {
@@ -59,7 +58,7 @@ router.beforeEach(async (to, from, next) => {
           await store.dispatch(`user/${FED_LOGOUT}`);
           Message.error(error || 'Has Error');
           // next(`/login?redirect=${to.path}`);
-          next(`/check-file-in-pdf`);
+          next(`/`);
 
           NProgress.done();
         }
@@ -75,12 +74,12 @@ router.beforeEach(async (to, from, next) => {
     } else {
       
       
-      if(to.path.includes('/check-file-in-pdf') || to.path.includes('/gen-code')){
+      if(to.path.includes('/')){
         next()
       }else{
          // other pages that do not have permission to access are redirected to the login page.
         // next(`/login?redirect=${to.path}`);   
-        next(`/check-file-in-pdf`);
+        next(`/`);
       }
       
       NProgress.done();

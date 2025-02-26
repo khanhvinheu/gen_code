@@ -38,7 +38,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         titleTable: 'Quản Lý Công Việc',
         titleForm: 'thông tin công việc'
       },
-      codeControllerExample: '',
+      codeReview: 'Chọn file để xem nội dung được tạo',
       activeEdit: false,
       listField: [],
       listFieldTable: [],
@@ -52,7 +52,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (this.active++ > 4) this.active = 1;
     },
     back: function back() {
-      if (this.active-- > 2) this.active = 1;
+      if (this.active > 1) this.active--;
     },
     getContentMigration: function getContentMigration() {
       var _this = this;
@@ -64,8 +64,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-migration', this.form).then(function (_ref) {
         var data = _ref.data;
-        _this.codeControllerExample = data;
-        _this.validExCode = true;
+        _this.codeReview = data;
+        // this.validExCode = true
       });
     },
     getContentModel: function getContentModel() {
@@ -79,8 +79,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-model', this.form).then(function (_ref2) {
         var data = _ref2.data;
-        _this2.codeControllerExample = data;
-        _this2.validExCode = true;
+        _this2.codeReview = data;
+        // this.validExCode = true
       });
     },
     getContentController: function getContentController() {
@@ -97,8 +97,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-controller', this.form).then(function (_ref3) {
         var data = _ref3.data;
-        _this3.codeControllerExample = data;
-        _this3.validExCode = true;
+        _this3.codeReview = data;
+        // this.validExCode = true
       });
     },
     getContentRouter: function getContentRouter() {
@@ -107,8 +107,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.form.set('controller_name', this.formModel.controllerName);
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-router', this.form).then(function (_ref4) {
         var data = _ref4.data;
-        _this4.codeControllerExample = data;
-        _this4.validExCode = true;
+        _this4.codeReview = data;
+        // this.validExCode = true
       });
     },
     getContentVueTable: function getContentVueTable() {
@@ -124,8 +124,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-vue-table', this.form).then(function (_ref5) {
         var data = _ref5.data;
-        _this5.codeControllerExample = data;
-        _this5.validExCode = true;
+        _this5.codeReview = data;
+        // this.validExCode = true
       });
     },
     getContentVueForm: function getContentVueForm() {
@@ -144,8 +144,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-vue-form', this.form).then(function (_ref6) {
         var data = _ref6.data;
-        _this6.codeControllerExample = data;
-        _this6.validExCode = true;
+        _this6.codeReview = data;
+        // this.validExCode = true
       });
     },
     getContentVueRouter: function getContentVueRouter() {
@@ -164,8 +164,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/get-content-vue-router', this.form).then(function (_ref7) {
         var data = _ref7.data;
-        _this7.codeControllerExample = data;
-        _this7.validExCode = true;
+        _this7.codeReview = data;
+        // this.validExCode = true
       });
     },
     genCode: function genCode() {
@@ -193,7 +193,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
       _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].post('/api/generate-code-all', this.form).then(function (_ref8) {
         var data = _ref8.data;
-        _this8.codeControllerExample = data;
+        _this8.codeReview = data;
         //this.validExCode = true
         if (data.success) {
           _this8.$notify({
@@ -203,7 +203,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           });
           setTimeout(function () {
             location.reload();
-          }, 500);
+          }, 2000);
         }
       });
     },
@@ -587,22 +587,22 @@ var render = function render() {
       "margin-top": "12px"
     },
     on: {
-      click: _vm.next
+      click: _vm.back
     }
-  }, [_vm._v("Next step")]), _vm._v(" "), _c("el-button", {
+  }, [_vm._v("Back step")]), _vm._v(" "), _c("el-button", {
     staticStyle: {
       "margin-top": "12px"
     },
     on: {
-      click: _vm.back
+      click: _vm.next
     }
-  }, [_vm._v("Back step")]), _vm._v(" "), _c("el-button", [_vm._v("Cancel")])], 1)], 1)], 1)]) : _vm._e(), _vm._v(" "), _vm.active == 2 ? _c("el-card", [_c("div", {
+  }, [_vm._v("Next step")]), _vm._v(" "), _c("el-button", [_vm._v("Cancel")])], 1)], 1)], 1)]) : _vm._e(), _vm._v(" "), _vm.active == 2 ? _c("el-card", [_c("div", {
     staticClass: "text item"
   }, [_c("el-form", {
     ref: "form",
     attrs: {
       model: _vm.vueModel,
-      "label-width": "120px"
+      "label-width": "150px"
     }
   }, [_c("el-form-item", {
     attrs: {
@@ -888,6 +888,13 @@ var render = function render() {
       "margin-top": "12px"
     },
     on: {
+      click: _vm.back
+    }
+  }, [_vm._v("Back step")]), _vm._v(" "), _c("el-button", {
+    staticStyle: {
+      "margin-top": "12px"
+    },
+    on: {
       click: _vm.next
     }
   }, [_vm._v("Next step")]), _vm._v(" "), _c("el-button", [_vm._v("Cancel")])], 1)], 1)], 1)]) : _vm._e(), _vm._v(" "), _c("el-card", {
@@ -903,10 +910,90 @@ var render = function render() {
     },
     on: {
       click: function click($event) {
+        return _vm.getContentMigration();
+      }
+    }
+  }, [_vm._v("GetContentMigration")]), _vm._v(" "), _c("el-button", {
+    attrs: {
+      type: "success"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.getContentModel();
+      }
+    }
+  }, [_vm._v("GetContentModel")]), _vm._v(" "), _c("el-button", {
+    attrs: {
+      type: "danger"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.getContentController();
+      }
+    }
+  }, [_vm._v("GetContentController")]), _vm._v(" "), _c("el-button", {
+    attrs: {
+      type: "danger"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.getContentRouter();
+      }
+    }
+  }, [_vm._v("GetContentRouter")]), _vm._v(" "), _c("el-button", {
+    attrs: {
+      type: "primary"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.getContentVueTable();
+      }
+    }
+  }, [_vm._v("GetContentVueTable")]), _vm._v(" "), _c("el-button", {
+    attrs: {
+      type: "primary"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.getContentVueForm();
+      }
+    }
+  }, [_vm._v("GetContentVueForm")]), _vm._v(" "), _c("el-button", {
+    attrs: {
+      type: "primary"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.getContentVueRouter();
+      }
+    }
+  }, [_vm._v("GetContentVueRouter")]), _vm._v(" "), _c("el-divider"), _vm._v(" "), _c("pre", {
+    staticStyle: {
+      "background-color": "black",
+      "max-height": "60vh",
+      "overflow-x": "auto"
+    }
+  }, [_c("code", {
+    staticStyle: {
+      color: "#20c275"
+    }
+  }, [_vm._v(_vm._s(_vm.codeReview))])]), _vm._v(" "), _c("el-button", {
+    attrs: {
+      type: "primary"
+    },
+    on: {
+      click: function click($event) {
         return _vm.genCode();
       }
     }
-  }, [_vm._v("GenCode")])], 1), _vm._v(" "), _c("el-dialog", {
+  }, [_vm._v("GenCode")]), _vm._v(" "), _c("el-button", {
+    staticStyle: {
+      "margin-top": "12px"
+    },
+    on: {
+      click: _vm.back
+    }
+  }, [_vm._v("Back step")])], 1), _vm._v(" "), _c("el-dialog", {
     attrs: {
       visible: _vm.validExCode,
       width: "50vw"
@@ -1003,7 +1090,7 @@ var render = function render() {
     staticStyle: {
       color: "#20c275"
     }
-  }, [_vm._v(_vm._s(_vm.codeControllerExample))])])], 1)], 1);
+  }, [_vm._v(_vm._s(_vm.codeReview))])])], 1)], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;

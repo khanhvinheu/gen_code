@@ -65,9 +65,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _this = _this2;
-              _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].query('/api/admin/task2/gen_code').then(function (_ref) {
+              _common_api_service__WEBPACK_IMPORTED_MODULE_0__["default"].query('/api/admin/taskmanager/gen_code').then(function (_ref) {
                 var data = _ref.data;
-                _this.form.task2Code = data;
+                _this.form.taskCode = data;
               });
             case 2:
             case "end":
@@ -80,7 +80,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this3 = this;
       var _this = this;
       var url;
-      url = this.resID ? '/api/admin/task2/update/' + this.resID : '/api/admin/task2/create';
+      url = this.resID ? '/api/admin/taskmanager/update/' + this.resID : '/api/admin/taskmanager/create';
       this.$refs['form'].validate(function (valid) {
         if (valid) {
           axios({
@@ -120,7 +120,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               _context2.next = 3;
               return axios({
                 method: 'get',
-                url: '/api/admin/task2/detail/' + id
+                url: '/api/admin/taskmanager/detail/' + id
               }).then(function (_ref2) {
                 var data = _ref2.data;
                 if (data['success']) {

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use App\Traits\CommonHelper;
 use App\Models\Modules;
+use Illuminate\Support\Facades\Schema;
 
 class GenTableController extends Controller
 {
@@ -28,6 +29,144 @@ class GenTableController extends Controller
         $newCode = 'MD' . str_pad($number, 4, '0', STR_PAD_LEFT); // tạo mã mới dựa trên số đó và định dạng "ABCXXX"
         return $newCode;
     }
+    //Function generater
+    public function gennerateMigrateFn($tableName, $fields){   
+     // Tạo nội dung migration
+        $migrationName = 'create_' . $tableName . '_table';
+        $migrationFiles = glob(database_path('migrations/*.php')); // Lấy danh sách tất cả file migration
+        $existingMigration = null;
+        foreach ($migrationFiles as $file) {           
+            if (str_contains($file, $migrationName)) {
+                $existingMigration = $file;
+                break;
+            }
+        }
+        $migrationContent = self::genMargationContent($tableName, $fields);
+        if ($existingMigration) {
+            // Nếu migration đã tồn tại, cập nhật nội dung
+            file_put_contents($existingMigration, $migrationContent);
+            // Lấy đường dẫn tương đối từ thư mục dự án
+            $relativePath = str_replace(database_path() . DIRECTORY_SEPARATOR, '/database/', $existingMigration);    
+            Artisan::call('migrate:refresh', ['--path' => $relativePath]);
+        } else {
+            // Nếu chưa tồn tại, tạo migration mới
+            $migrationFileName = date('Y_m_d_His') . '_' . $migrationName . '.php';
+            $migrationPath = database_path("migrations/$migrationFileName");
+            file_put_contents($migrationPath, $migrationContent);
+            Artisan::call('migrate');
+        }
+        return true;
+    }
+
+    public function generateModelsFn($modelName, $tableName, $fields){         
+        // Tạo nội dung model
+        $modelPath = app_path("Models/admin/{$modelName}.php");
+        $modelContent = $this->generateModelContent($modelName, $tableName, $fields);
+        // Ghi file
+        File::ensureDirectoryExists(app_path("Models/admin"));
+        File::put($modelPath, $modelContent);
+        return true;
+    }
+
+    public function generateControllerFn($controllerName, $model_name, $pathController, $feildNameGenCode, $textGenCode){       
+        $controllerPath = app_path("Http/Controllers/admin/{$controllerName}.php");
+        if(@$pathController){
+            $controllerPath = app_path("Http/Controllers/admin/{$controllerName}.php");
+        }        
+        // 1. Tạo Controller bằng Artisan
+        Artisan::call("make:controller admin/{$controllerName}");              
+        // 2. Kiểm tra xem file đã được tạo chưa    
+        if (File::exists($controllerPath)) {
+            // Nội dung muốn chèn vào controller
+            $content = self::genControllerContent($controllerName, $model_name, $pathController, $feildNameGenCode, $textGenCode);          
+            
+            // 3. Ghi nội dung vào file
+            File::put($controllerPath, $content);
+        }
+        return true;
+    }
+
+    public function pushRouterFn($model_name, $controllerName, $componentName){        
+        $newRoute = self::genListRouter($model_name, $controllerName, $componentName);
+        // Đường dẫn file api.php
+        $routePath = base_path('routes/api.php');    
+        // Đọc nội dung file
+        $fileContent = File::get($routePath);    
+        // Xác định vị trí nhóm Route::prefix('admin')->namespace('admin')->group(function () {
+        $pattern = "/Route::prefix\('admin'\)->namespace\('admin'\)->group\(function\s*\(\)\s*{/";
+        preg_match($pattern, $fileContent, $matches, PREG_OFFSET_CAPTURE);
+    
+        if (!empty($matches)) {
+            // Kiểm tra xem route đã tồn tại chưa
+            if (str_contains($fileContent, $newRoute)) {
+                return; // Route đã có, không cần thêm
+            }    
+            // Vị trí chèn route vào bên trong nhóm admin
+            $insertPosition = $matches[0][1] + strlen($matches[0][0]);    
+            // Chèn hoặc cập nhật route mới
+            $fileContent = substr_replace($fileContent, "\n    $newRoute", $insertPosition, 0);    
+            // Ghi lại file
+            File::put($routePath, $fileContent);
+        } 
+        return true;
+    }
+    public function generateVueTableFn($componentName,$titleTable, $pathApi, $fieldsTable, $componentPath){      
+        $vuePath = resource_path("js/backend/components/{$componentPath}/index.vue");
+        // Nội dung mặc định của file Vue
+        $content =self::generateVueTemplateTable($componentName,$titleTable,$pathApi,$fieldsTable);
+        // Kiểm tra thư mục components, nếu chưa có thì tạo
+        if (!File::isDirectory(resource_path("js/backend/components/{$componentName}"))) {
+            File::makeDirectory(resource_path("js/backend/components/{$componentName}"), 0777, true);
+        }
+        // Ghi nội dung vào file .vue
+        File::put($vuePath, $content);
+        return true;
+    }
+    public function generateVueFormFn($componentName, $titleTable, $pathApi, $fieldsTable, $titleForm, $feildNameGenCode, $componentPath){
+        //VUE FORM
+        $vueFormPath = resource_path("js/backend/components/{$componentPath}/form.vue");
+
+        // Nội dung mặc định của file Vue
+        $content =self::generateVueTemplateForm($componentName, $titleTable, $pathApi, $fieldsTable, $titleForm, $feildNameGenCode);
+
+        // Kiểm tra thư mục components, nếu chưa có thì tạo
+        if (!File::isDirectory(resource_path("js/backend/components/{$componentName}"))) {
+            File::makeDirectory(resource_path("js/backend/components/{$componentName}"), 0777, true);
+        }
+
+        // Ghi nội dung vào file .vue
+        File::put($vueFormPath, $content);
+        return true;
+    }
+    public function pushRouterVueFn($componentName, $titleTable, $pathApi, $fieldsTable, $titleForm, $feildNameGenCode, $componentPath){     
+        $routerPath = resource_path('js/backend/router/routes.js');
+        if (!file_exists($routerPath)) {
+            return response()->json(['error' => 'Không tìm thấy file routes.js'], 400);
+        }    
+        $routerContent = file_get_contents($routerPath);    
+        // Xác định vị trí của `children` trong `/dashboard`
+        $dashboardPattern = '/path: \'\/dashboard\',[\s\S]*?children: \[/';
+        preg_match($dashboardPattern, $routerContent, $matches, PREG_OFFSET_CAPTURE);    
+        if (!$matches) {
+            return response()->json(['error' => 'Không tìm thấy /dashboard trong file router'], 400);
+        }    
+        // Tạo route mới
+        $vueRoute = self::generateVueRouter($componentPath, $componentName);    
+        // Kiểm tra xem route đã tồn tại chưa
+        if (str_contains($routerContent, "path: '$componentPath'")) {
+            // Cập nhật route đã có
+            $routePattern = "/\s*{\s*path:\s*'$componentPath',[\s\S]*?},?/";
+            $routerContent = preg_replace($routePattern, $vueRoute, $routerContent);
+        } else {
+            // Thêm route vào `children`
+            $insertPosition = $matches[0][1] + strlen($matches[0][0]);
+            $routerContent = substr_replace($routerContent, "\n    $vueRoute,", $insertPosition, 0);
+        }    
+        // Ghi lại file router
+        file_put_contents($routerPath, $routerContent);
+        return true;
+    }
+
     public function generateCode(Request $request){
         $request->validate([
             'component_name' => 'required|string',
@@ -42,14 +181,6 @@ class GenTableController extends Controller
             'fields' => 'required|string',
             'fieldsTable' => 'required|string',
         ]);
-        $fields = $request->input('fields');
-        if($fields){
-            $fields = json_decode($fields, true);
-        }     
-        $fieldsTable = $request->input('fieldsTable');
-        if($fieldsTable){
-            $fieldsTable = json_decode($fieldsTable, true);
-        }     
         $componentName = $request->input('component_name');
         $componentPath = $request->input('component_path');
         $feildNameGenCode = $request->input('feild_name_gencode');
@@ -57,117 +188,27 @@ class GenTableController extends Controller
         $titleTable = $request->input('title_table');
         $model_name = $request->input('model_name');
         $titleForm = $request->input('title_form');
-        $tableName = $request->input('table_name');       
-        // Tạo nội dung migration
-        $migrationName = 'create_' . $tableName . '_table';
-        $migrationFileName = date('Y_m_d_His') . '_' . $migrationName . '.php';
-        $migrationPath = database_path("migrations/$migrationFileName");
-
-        $migrationContent = self::genMargationContent($tableName, $fields);
-        file_put_contents($migrationPath, $migrationContent);
-
-        // Chạy migrate để tạo bảng
-        Artisan::call('migrate');
-       
-
-        $modelName = ucfirst($request->input('model_name'));
-        
-
-        // Tạo nội dung model
-        $modelPath = app_path("Models/admin/{$modelName}.php");
-        $modelContent = $this->generateModelContent($modelName, $tableName, $fields);
-
-        // Ghi file
-        File::ensureDirectoryExists(app_path("Models/admin"));
-        File::put($modelPath, $modelContent);
-        
-
+        $tableName = $request->input('table_name');    
         $controllerName = $request->input('controller_name');
-        $pathController = $request->input('pathController','admin');            
-        $controllerPath = app_path("Http/Controllers/admin/{$controllerName}.php");
-        if(@$pathController){
-            $controllerPath = app_path("Http/Controllers/admin/{$controllerName}.php");
-        }
-        
-        // 1. Tạo Controller bằng Artisan
-        Artisan::call("make:controller admin/{$controllerName}");
-      
-        $textGenCode = ($request->input('text_gencode'));
-        // 2. Kiểm tra xem file đã được tạo chưa
-    
-        if (File::exists($controllerPath)) {
-            // Nội dung muốn chèn vào controller
-            $content = self::genControllerContent($controllerName, $model_name,'admin', $feildNameGenCode, $textGenCode);          
-            
-            // 3. Ghi nội dung vào file
-            File::put($controllerPath, $content);
-        }
-       
-
+        $pathController = $request->input('pathController','admin');        
+        $textGenCode = ($request->input('text_gencode'));   
+        $fields = $request->input('fields');
         $routeName = $request->input('route_name'); // Ví dụ: 'custom-route'
-        $newRoute = self::genListRouter($model_name, $controllerName, $componentName);
-        // Đường dẫn file api.php
-        $routePath = base_path('routes/api.php');
-        // Đọc nội dung file
-        $fileContent = File::get($routePath);
-        // Xác định vị trí của Route::prefix('admin')->namespace('admin')->group(function () {
-        $pattern = "/Route::prefix\('admin'\)->namespace\('admin'\)->group\(function\s*\(\)\s*{/";
-        preg_match($pattern, $fileContent, $matches, PREG_OFFSET_CAPTURE);
-        if (!empty($matches)) {
-            // Vị trí cần chèn
-            $insertPosition = $matches[0][1] + strlen($matches[0][0]);
-            // Chèn route vào bên trong nhóm admin
-            $fileContent = substr_replace($fileContent, "\n$newRoute", $insertPosition, 0);
-            // Ghi lại file
-            File::put($routePath, $fileContent);            
-        }               
-        //vue table
-        $vuePath = resource_path("js/backend/components/{$componentPath}/index.vue");
-
-        // Nội dung mặc định của file Vue
-        $content =self::generateVueTemplateTable($componentName,$titleTable,$pathApi,$fieldsTable);
-
-        // Kiểm tra thư mục components, nếu chưa có thì tạo
-        if (!File::isDirectory(resource_path("js/backend/components/{$componentName}"))) {
-            File::makeDirectory(resource_path("js/backend/components/{$componentName}"), 0777, true);
-        }
-
-        // Ghi nội dung vào file .vue
-        File::put($vuePath, $content);
-        
-        //vue form
-        $vueFormPath = resource_path("js/backend/components/{$componentPath}/form.vue");
-
-        // Nội dung mặc định của file Vue
-        $content =self::generateVueTemplateForm($componentName, $titleTable, $pathApi, $fieldsTable, $titleForm, $feildNameGenCode);
-
-        // Kiểm tra thư mục components, nếu chưa có thì tạo
-        if (!File::isDirectory(resource_path("js/backend/components/{$componentName}"))) {
-            File::makeDirectory(resource_path("js/backend/components/{$componentName}"), 0777, true);
-        }
-
-        // Ghi nội dung vào file .vue
-        File::put($vueFormPath, $content);
-
-         
-        // Đọc file router Vue hiện tại
-        $routerPath = resource_path('js/backend/router/routes.js');        
-        $routerContent = file_get_contents($routerPath);    
-        // Xác định vị trí của `children` trong `/dashboard`
-        $dashboardPattern = '/path: \'\/dashboard\',[\s\S]*?children: \[/';
-        preg_match($dashboardPattern, $routerContent, $matches);
-
-        if (!$matches) {
-            return response()->json(['error' => 'Không tìm thấy /dashboard trong file router'], 400);
-        }
-        $vueRoutes = self::generateVueRouter($componentPath, $componentName); 
-        // Chèn vào `children` của `/dashboard`
-        if (!str_contains($routerContent, "path: $componentPath")) {
-            $routerContent = preg_replace($dashboardPattern, "$0{$vueRoutes}", $routerContent);
-            // Ghi lại file router
-            file_put_contents($routerPath, $routerContent);
-        }
-       
+        if($fields){
+            $fields = json_decode($fields, true);
+        }     
+        $fieldsTable = $request->input('fieldsTable');
+        if($fieldsTable){
+            $fieldsTable = json_decode($fieldsTable, true);
+        }         
+        self::gennerateMigrateFn($tableName, $fields);
+        self::generateModelsFn($model_name, $tableName, $fields);
+        self::generateControllerFn($controllerName, $model_name, $pathController, $feildNameGenCode, $textGenCode);
+        self::pushRouterFn($model_name, $controllerName, $componentName);
+        self::generateVueTableFn($componentName, $titleTable, $pathApi, $fieldsTable, $componentPath);
+        self::generateVueFormFn($componentName, $titleTable, $pathApi, $fieldsTable, $titleForm, $feildNameGenCode, $componentPath);
+        self::pushRouterVueFn($componentName, $titleTable, $pathApi, $fieldsTable, $titleForm, $feildNameGenCode, $componentPath);
+        // ADD NEW ITEM MODULE
         $form=  [
             "code"=>self::genCode(),
             "name"=>$tableName,

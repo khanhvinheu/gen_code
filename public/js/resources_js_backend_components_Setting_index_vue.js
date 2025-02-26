@@ -11,7 +11,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _config_appConfig_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../config/appConfig.json */ "./public/config/appConfig.json");
+/* harmony import */ var _config_appConfig_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../config/appConfig.json */ "./public/config/appConfig.json");
 /* harmony import */ var _common_api_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../common/api.service */ "./resources/js/backend/common/api.service.js");
 /* harmony import */ var v_jsoneditor_src_index__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! v-jsoneditor/src/index */ "./node_modules/v-jsoneditor/src/index.js");
 

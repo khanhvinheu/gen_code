@@ -5,17 +5,11 @@ Vue.use(VueRouter);
 
 export const constantRouterMap = [
     {
-        path: '/check-file-in-pdf/:id?',
+        path: '/',
         component: () => import('../components/CheckFile/index'),
         name:'Home',
         meta:{title:'Home'}
-    },
-    {
-        path: '/check-file-in-pdf-look-up',
-        component: () => import('../components/CheckFile/lookUp'),
-        name:'lookUp',
-        meta:{title:'lookUp'}
-    },
+    },   
     {
         path: '/login',
         component: () => import('../components/Auth/login'),
@@ -27,7 +21,89 @@ export const constantRouterMap = [
         component: ()=> import('../components/index'),
         name: 'admin',
         redirect: '/index',
-        children: [    
+        children: [
+        
+
+            //QuanLyCongViec
+            {
+                path: '/quanlycongviec',
+                component: () => import('../components/QuanLyCongViec/index'),
+                name: 'QuanLyCongViecList',
+                meta: { title: 'QuanLyCongViecList' }
+            },
+            {
+                path: '/quanlycongviec/create',
+                component: () => import('../components/QuanLyCongViec/form'),
+                name: 'QuanLyCongViecCreate',
+                meta: { title: 'QuanLyCongViecCreate', type: 'Form' }
+            },
+            {
+                path: '/quanlycongviec/:id?',
+                component: () => import('../components/QuanLyCongViec/form'),
+                name: 'QuanLyCongViecUpdate',
+                meta: { title: 'QuanLyCongViecUpdate', type: 'Form' }
+            },,
+        
+
+            //QuanLyCongViec
+            {
+                path: '/quanlycongviec',
+                component: () => import('../components/QuanLyCongViec/index'),
+                name: 'QuanLyCongViecList',
+                meta: { title: 'QuanLyCongViecList' }
+            },
+            {
+                path: '/quanlycongviec/create',
+                component: () => import('../components/QuanLyCongViec/form'),
+                name: 'QuanLyCongViecCreate',
+                meta: { title: 'QuanLyCongViecCreate', type: 'Form' }
+            },
+            {
+                path: '/quanlycongviec/:id?',
+                component: () => import('../components/QuanLyCongViec/form'),
+                name: 'QuanLyCongViecUpdate',
+                meta: { title: 'QuanLyCongViecUpdate', type: 'Form' }
+            },,    
+
+            //QuanLyCongViec2
+            {
+                path: '/quanlycongviec2',
+                component: () => import('../components/QuanLyCongViec2/index'),
+                name: 'QuanLyCongViec2List',
+                meta: { title: 'QuanLyCongViec2List' }
+            },
+            {
+                path: '/quanlycongviec2/create',
+                component: () => import('../components/QuanLyCongViec2/form'),
+                name: 'QuanLyCongViec2Create',
+                meta: { title: 'QuanLyCongViec2Create', type: 'Form' }
+            },
+            {
+                path: '/quanlycongviec2/:id?',
+                component: () => import('../components/QuanLyCongViec2/form'),
+                name: 'QuanLyCongViec2Update',
+                meta: { title: 'QuanLyCongViec2Update', type: 'Form' }
+            },    
+
+            //QuanLyCongViec
+            {
+                path: '/quanlycongviec',
+                component: () => import('../components/QuanLyCongViec/index'),
+                name: 'QuanLyCongViecList',
+                meta: { title: 'QuanLyCongViecList' }
+            },
+            {
+                path: '/quanlycongviec/create',
+                component: () => import('../components/QuanLyCongViec/form'),
+                name: 'QuanLyCongViecCreate',
+                meta: { title: 'QuanLyCongViecCreate', type: 'Form' }
+            },
+            {
+                path: '/quanlycongviec/:id?',
+                component: () => import('../components/QuanLyCongViec/form'),
+                name: 'QuanLyCongViecUpdate',
+                meta: { title: 'QuanLyCongViecUpdate', type: 'Form' }
+            },    
              //GenCode
              {
                 path: '/gen-code',
